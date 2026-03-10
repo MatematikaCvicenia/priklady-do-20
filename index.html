@@ -1,134 +1,3 @@
-<!DOCTYPE html>
-<html lang="sk">
-<head>
-<meta charset="UTF-8">
-<title>Príklady do 20 – pre 1. ročník</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 40px;
-    line-height: 1.6;
-    background: #f9f9f9;
-  }
-  h2 { color: #2c3e50; }
-  .menu {
-    margin-bottom: 30px;
-    padding: 15px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  }
-  .priklady {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
-  }
-  .priklad {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 16px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  }
-  .priklad b {
-    font-size: 1.4em;
-    color: #34495e;
-  }
-  input[type="number"] {
-    width: 100px;
-    font-size: 24px;
-    padding: 6px;
-    text-align: center;
-    border: 2px solid #bdc3c7;
-    border-radius: 6px;
-  }
-  .spravne { background: #e8f5e9; border-color: #27ae60; }
-  .zle     { background: #ffebee; border-color: #c0392b; }
-  button {
-    margin: 12px 14px 20px 0;
-    padding: 10px 22px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-  }
-  button:nth-child(1) { background: #3498db; color: white; }
-  button:nth-child(2) { background: #e67e22; color: white; }
-  .menu label { margin-right: 20px; font-size: 1.05em; }
-  h3#vysledok { margin-top: 24px; color: #2c3e50; font-size: 1.4em; }
-  .skupina { margin: 14px 0; }
-  select, input[type="radio"] { vertical-align: middle; }
-  small { color: #555; }
-</style>
-</head>
-<body>
-
-<h2>Matematika do 20 – pre prvákov</h2>
-
-<div class="menu">
-  <div class="skupina">
-    <strong>Typ úloh:</strong><br>
-    <label><input type="radio" name="kategoria" value="s_x" checked onchange="generuj()"> S neznámou x</label>
-    <label><input type="radio" name="kategoria" value="bez_x" onchange="generuj()"> Klasické (bez x)</label>
-  </div>
-
-  <div id="nastavenia-spolecne" class="skupina">
-    <hr style="margin: 16px 0 12px;">
-    <label><strong>Počet čísel v príklade:</strong>
-      <select id="pocet_cisel" onchange="generuj()">
-        <option value="2" selected>2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
-    </label>
-  </div>
-
-  <div class="skupina">
-    <strong>Operácie:</strong><br>
-    <label><input type="radio" name="typ" value="plus" checked onchange="generuj()"> Len sčítanie</label>
-    <label><input type="radio" name="typ" value="minus" onchange="generuj()"> Len odčítanie</label>
-    <label><input type="radio" name="typ" value="mix"   onchange="generuj()"> Mix (+ a −)</label>
-  </div>
-</div>
-
-<button onclick="generuj()">Nové príklady</button>
-<button onclick="vyhodnot()">Vyhodnotiť</button>
-
-<h3 id="vysledok"></h3>
-
-<div class="priklady" id="vystup"></div>
-
-<script>
-let riesenia = [];
-
-function getPocetCisel() {
-  return parseInt(document.getElementById("pocet_cisel").value) || 2;
-}
-
-function getTyp() {
-  return document.querySelector('input[name="typ"]:checked')?.value || "plus";
-}
-
-function getKategoria() {
-  return document.querySelector('input[name="kategoria"]:checked')?.value || "s_x";
-}
-
-function generuj() {
-  const kategoria = getKategoria();
-  const vystup = document.getElementById("vystup");
-  vystup.innerHTML = "";
-  riesenia = [];
-
-  if (kategoria === "s_x") {
-    generujSX();
-  } else {
-    generujBezX();
-  }
-
-  document.getElementById("vysledok").innerText = "";
-}
-
 function generujSX() {
   const pocetCiselOkremX = getPocetCisel();
   const pocetOperacii = (pocetCiselOkremX === 2) ? 1 : pocetCiselOkremX - 1;
@@ -139,7 +8,7 @@ function generujSX() {
     let znaky = [];
     let vysledok;
 
-    let x = Math.floor(Math.random() * 11) + 3;  // 3–13
+    let x = Math.floor(Math.random() * 11) + 3; // 3–13
 
     for (let j = 0; j < pocetOperacii; j++) {
       let c = Math.floor(Math.random() * 9) + 1;
@@ -151,6 +20,7 @@ function generujSX() {
       znaky.push(z);
     }
 
+    // výpočet výsledku (vždy x na začiatku pre jednoduchosť výpočtu)
     vysledok = x;
     znaky.forEach((z, idx) => {
       vysledok += (z === "+") ? cisla[idx] : -cisla[idx];
@@ -161,135 +31,30 @@ function generujSX() {
       continue;
     }
 
-    let priklad = "x";
-    for (let j = 0; j < cisla.length; j++) {
-      priklad += ` ${znaky[j]} ${cisla[j]}`;
+    // ────────────────────────────────────────────────
+    // TU SA MENÍ FORMÁT – náhodné poradie pri 2 číslach
+    let priklad = "";
+
+    if (pocetOperacii === 1) {
+      // len jedna operácia → 60 % x vľavo, 40 % x vpravo
+      const xVlavom = Math.random() < 0.6;
+
+      if (xVlavom) {
+        priklad = `x ${znaky[0]} ${cisla[0]} = ${vysledok}`;
+      } else {
+        priklad = `${cisla[0]} ${znaky[0]} x = ${vysledok}`;
+      }
+    } else {
+      // viac operácií → x vždy vľavo
+      priklad = "x";
+      for (let j = 0; j < cisla.length; j++) {
+        priklad += ` ${znaky[j]} ${cisla[j]}`;
+      }
+      priklad += ` = ${vysledok}`;
     }
-    priklad += ` = ${vysledok}`;
+    // ────────────────────────────────────────────────
 
     riesenia.push(x);
     vytvorPriklad(priklad);
   }
 }
-
-function generujBezX() {
-  const pocet = getPocetCisel();
-  const typ = getTyp();
-
-  for (let i = 0; i < 12; i++) {
-    let priklad = "";
-    let vysledok = 0;
-
-    for (let j = 0; j < pocet; j++) {
-      let cislo = Math.floor(Math.random() * 9) + 1;
-
-      if (j === 0) {
-        priklad += cislo;
-        vysledok = cislo;
-        continue;
-      }
-
-      let znak;
-      if (typ === "plus")     znak = "+";
-      else if (typ === "minus") znak = "-";
-      else                    znak = Math.random() < 0.55 ? "+" : "-";
-
-      priklad += ` ${znak} ${cislo}`;
-      vysledok += (znak === "+") ? cislo : -cislo;
-    }
-
-    if (vysledok < 1 || vysledok > 20) {
-      i--;
-      continue;
-    }
-
-    priklad += " = ";
-    riesenia.push(vysledok);
-    vytvorPriklad(priklad);
-  }
-}
-
-function vytvorPriklad(text) {
-  const div = document.createElement("div");
-  div.className = "priklad";
-  div.innerHTML = `
-    <b>${text}</b><br><br>
-    <input type="number" min="0" max="40" placeholder="?"><br><br>
-    <small>pomocná tabuľka / kreslenie (stlač a ťahaj myšou):</small><br>
-    <canvas width="280" height="200"></canvas><br>
-    <button onclick="vymaz(this)">Vymaž tabuľku</button>
-  `;
-  document.getElementById("vystup").appendChild(div);
-
-  const canvas = div.querySelector("canvas");
-  const ctx = canvas.getContext("2d");
-  let kresli = false;
-
-  // nastavenie štýlu kreslenia
-  ctx.lineWidth = 10;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#0a3d62";
-
-  function nakresli(e) {
-    if (!kresli) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-  }
-
-  canvas.addEventListener("mousedown", (e) => {
-    kresli = true;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    nakresli(e);  // hneď začne čiaru / bodku
-  });
-
-  canvas.addEventListener("mousemove", nakresli);
-
-  canvas.addEventListener("mouseup", () => {
-    kresli = false;
-    ctx.beginPath();
-  });
-
-  canvas.addEventListener("mouseleave", () => {
-    kresli = false;
-    ctx.beginPath();
-  });
-}
-
-function vymaz(btn) {
-  const canvas = btn.parentElement.querySelector("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-function vyhodnot() {
-  const priklady = document.querySelectorAll(".priklad");
-  let ok = 0;
-  priklady.forEach((p, i) => {
-    const val = p.querySelector("input").value.trim();
-    p.classList.remove("spravne", "zle");
-    if (val !== "" && Number(val) === riesenia[i]) {
-      p.classList.add("spravne");
-      ok++;
-    } else {
-      p.classList.add("zle");
-    }
-  });
-  document.getElementById("vysledok").innerText = `Správne: ${ok} / ${riesenia.length}`;
-}
-
-// spustenie pri načítaní
-generuj();
-</script>
-</body>
-</html>
