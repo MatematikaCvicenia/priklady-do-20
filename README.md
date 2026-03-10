@@ -12,7 +12,7 @@ Jednoduchá interaktívna webová stránka na precvičovanie sčítania a odčí
 - Vyhodnotenie správnosti
 
 ## Autorské práva
-© 2026 [Tvoje meno / prezývka]
+© 2026 @rohorin
 
 **Všetky práva vyhradené.**  
 Kopírovanie, verejné šírenie, úpravy a vydávanie za vlastné dielo sú **zakázané** bez písomného súhlasu autora.
@@ -21,7 +21,4 @@ Kopírovanie, verejné šírenie, úpravy a vydávanie za vlastné dielo sú **z
 1. Stiahni všetky súbory
 2. Otvor `index.html` v prehliadači
 
-Alebo jednoducho navštív stránku online (ak si ju nahral niekde).
-
----
 Vytvorené na pomoc deťom v 1. ročníku ZŠ.
