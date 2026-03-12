@@ -47,25 +47,24 @@
 
   button {
     margin: 12px 14px 20px 0;
-    padding: 14px 32px;
-    font-size: 18px;
+    padding: 12px 24px;
+    font-size: 16px;
     font-weight: bold;
     cursor: pointer;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     color: white;
-    transition: all 0.25s ease;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
   }
-
   button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0,0,0,0.2);
   }
 
-  .btn-nove   { background: #2ecc71; }   /* jasná zelená – Nové príklady */
-  .btn-vyhodnot { background: #e74c3c; }   /* červená – Vyhodnotiť */
-  .btn-vyhodnot:hover { background: #c0392b; }
+  .btn-nove     { background: #28a745; }          /* zelená – Nové príklady */
+  .btn-vyhodnot { background: #e67e22; }          /* oranžová – Vyhodnotiť */
+  .btn-vymaz    { background: #3498db; }          /* modrá – Vymaž tabuľku */
+  .btn-vymaz:hover { background: #2980b9; }
 
   .menu label { margin-right: 20px; font-size: 1.05em; }
   h3#vysledok { margin-top: 24px; color: #2c3e50; font-size: 1.4em; }
@@ -168,29 +167,25 @@ function generujSX() {
       const cislo = cisla[0];
       const operacia = znaky[0];
 
+      spravneX = Math.floor(Math.random() * 11) + 3; // 3–13
+
       if (xVlavom) {
-        // x vľavo
-        spravneX = Math.floor(Math.random() * 11) + 3; // 3–13
+        priklad = `x ${operacia} ${cislo} = `;
         vysledok = spravneX + (operacia === "+" ? cislo : -cislo);
-        priklad = `x ${operacia} ${cislo} = ${vysledok}`;
       } else {
-        // x vpravo
-        spravneX = Math.floor(Math.random() * 11) + 3;
+        priklad = `${cislo} ${operacia} x = `;
         if (operacia === "+") {
           vysledok = cislo + spravneX;
         } else {
           vysledok = cislo - spravneX;
-          // ak by vyšlo negatívne alebo x príliš veľké, prehodíme na plus
-          if (vysledok < 1 || spravneX > 15) {
+          // ak by výsledok bol <1, prehodíme na plus (aby bolo pozitívnejšie)
+          if (vysledok < 1) {
             vysledok = cislo + spravneX;
-            priklad = `${cislo} + x = ${vysledok}`;
-          } else {
-            priklad = `${cislo} ${operacia} x = ${vysledok}`;
+            priklad = `${cislo} + x = `;
           }
         }
       }
     } else {
-      // viac operácií – x vždy vľavo
       spravneX = Math.floor(Math.random() * 11) + 3;
       priklad = "x";
       for (let j = 0; j < cisla.length; j++) {
@@ -259,7 +254,7 @@ function vytvorPriklad(text) {
     <input type="number" min="0" max="40" placeholder="?"><br><br>
     <small>pomocná tabuľka / kreslenie (stlač a ťahaj myšou):</small><br>
     <canvas width="280" height="200"></canvas><br>
-    <button onclick="vymaz(this)">Vymaž tabuľku</button>
+    <button class="btn-vymaz" onclick="vymaz(this)">Vymaž tabuľku</button>
   `;
   document.getElementById("vystup").appendChild(div);
 
